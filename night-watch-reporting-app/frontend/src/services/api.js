@@ -84,3 +84,34 @@ export const logout = async () => {
         throw error;
     }
 };
+
+// RGPD endpoints
+export const getConsent = async (token) => {
+    try {
+        const response = await api.get('/rgpd/consent', { headers: { Authorization: token } });
+        return response.data;
+    } catch (error) {
+        console.error('Erreur getConsent:', error);
+        throw error;
+    }
+};
+
+export const setConsent = async (token, consent) => {
+    try {
+        const response = await api.post('/rgpd/consent', { consent }, { headers: { Authorization: token } });
+        return response.data;
+    } catch (error) {
+        console.error('Erreur setConsent:', error);
+        throw error;
+    }
+};
+
+export const forgetMe = async (token) => {
+    try {
+        const response = await api.post('/rgpd/forget-me', {}, { headers: { Authorization: token } });
+        return response.data;
+    } catch (error) {
+        console.error('Erreur forgetMe:', error);
+        throw error;
+    }
+};
