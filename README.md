@@ -1,2 +1,0 @@
-# CopilotNightwatch-Reporting
-CopilotNightwatch-Reporting

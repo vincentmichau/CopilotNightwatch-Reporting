@@ -1,0 +1,40 @@
+{
+  "name": "night-watch-reporting-app",
+  "version": "1.0.0",
+  "description": "Application de reporting pour les veilleurs de nuit, incluant des fonctionnalités de gestion des rapports, de planification, de sécurité, d'historique, de chat, et d'administration.",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "init-db": "dotenv -e .env -- bash scripts/init_db.sh",
+    "docker-db-up": "docker-compose -f docker-compose.yml up -d",
+    "docker-db-down": "docker-compose -f docker-compose.yml down",
+    "wait-db": "bash scripts/wait_for_mysql.sh",
+    "init-db:docker": "npm run docker-db-up && npm run wait-db && npm run init-db",
+    "test": "jest --runInBand"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.18.1",
+    "nodemailer": "^8.0.1",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0",
+    "jest": "^29.0.0",
+    "nodemon": "^2.0.7",
+    "supertest": "^6.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/test/**/*.test.js"
+    ]
+  },
+  "author": "Votre Nom",
+  "license": "MIT"
+}
