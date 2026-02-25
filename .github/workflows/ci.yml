@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-e2e:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install backend dependencies
+        run: |
+          cd night-watch-reporting-app/backend
+          npm ci
+
+      - name: Install frontend dependencies
+        run: |
+          cd night-watch-reporting-app/frontend
+          npm ci
+
+      - name: Run backend tests
+        run: |
+          cd night-watch-reporting-app/backend
+          USE_MOCK_DB=true npm test -- --runInBand
+
+      - name: Run frontend unit tests
+        run: |
+          cd night-watch-reporting-app/frontend
+          NODE_OPTIONS=--openssl-legacy-provider CI=true npm test -- --watchAll=false
+
+      - name: Run database migrations (if any)
+        run: |
+          cd night-watch-reporting-app/backend
+          npm run migrate || true
+
+      - name: Start backend (mock DB)
+        run: |
+          cd night-watch-reporting-app/backend
+          USE_MOCK_DB=true PORT=5000 node src/app.js > backend.log 2>&1 &
+          echo $! > backend.pid
+
+      - name: Start frontend
+        run: |
+          cd night-watch-reporting-app/frontend
+          NODE_OPTIONS=--openssl-legacy-provider CI=true PORT=3000 BROWSER=none npm start > frontend.log 2>&1 &
+          echo $! > frontend.pid
+
+      - name: Wait for services
+        uses: jakejarvis/wait-action@v0.2.1
+        with:
+          timeout: '60'
+          services: |
+            http://localhost:5000/api
+            http://localhost:3000
+
+      - name: Run Cypress E2E
+        run: |
+          cd night-watch-reporting-app/frontend
+          npx cypress run --headless --browser electron
+
+      - name: Upload Cypress screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: night-watch-reporting-app/frontend/cypress/screenshots

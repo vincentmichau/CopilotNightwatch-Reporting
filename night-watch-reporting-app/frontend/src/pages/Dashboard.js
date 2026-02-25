@@ -15,6 +15,7 @@ const Dashboard = () => {
                     <li><Link to="/planning">Planning</Link></li>
                     <li><Link to="/history">Historique</Link></li>
                     <li><Link to="/admin">Administration</Link></li>
+                    <li><Link to="/rgpd">RGPD</Link></li>
                 </ul>
             </nav>
             <div className="report-section">

@@ -4,6 +4,7 @@ const reportController = require('../controllers/index');
 const adminController = require('../controllers/admin');
 const authMiddleware = require('../middleware/auth');
 const authController = require('../controllers/auth');
+const rgpdController = require('../controllers/rgpd');
 
 // Route pour créer un rapport
 router.post('/reports', authMiddleware.verifyToken, reportController.createReport);
@@ -28,6 +29,11 @@ router.post('/admin/users', adminController.createUser);
 router.post('/auth/login', authController.login);
 router.post('/auth/register', authController.register);
 router.get('/auth/confirm', authController.confirm);
+
+// RGPD endpoints
+router.get('/rgpd/consent', authMiddleware.verifyToken, rgpdController.getConsent);
+router.post('/rgpd/consent', authMiddleware.verifyToken, rgpdController.setConsent);
+router.post('/rgpd/forget-me', authMiddleware.verifyToken, rgpdController.forgetMe);
 
 // Autres routes peuvent être ajoutées ici
 
